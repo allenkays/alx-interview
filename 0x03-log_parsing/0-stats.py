@@ -57,7 +57,8 @@ def main():
                 pass
 
     except KeyboardInterrupt:
-        print("Keyboard interruption detected.")
+        print("KeyboardInterrupt")
+        exit(0)
     finally:
         print_stats(stats)
 
