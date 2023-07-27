@@ -3,6 +3,7 @@
 Script to read log input from standard in line by line
 and compute metrics
 """
+import signal
 import sys
 
 
@@ -22,7 +23,22 @@ def print_stats(stats):
 
     sorted_codes = sorted(stats.keys())
     for code in sorted_codes:
-        print("{:d}: {:d}".format(code, stats[code]))
+        print("{:s}: {:d}".format(code, stats[code]))
+
+
+def signal_handler(sig, frame):
+    """
+    Handle Keyboard Interrupt (SIGINT).
+
+    Args:
+        sig (int): The signal number.
+        frame (frame): The current stack frame
+
+    Returns:
+        None
+    """
+    print_stats(stats, total_size)
+    sys.exit(0)
 
 
 def main():
@@ -37,14 +53,13 @@ def main():
         None
     """
     stats = {}
+    total_size = 0
     line_count = 0
+
+    signal.signal(signal.SIGINT, signal_handler)
+
     try:
         for line in sys.stdin:
-            line_count += 1
-
-            if line_count % 10 == 0:
-                print_stats(stats)
-
             try:
                 parts = line.strip().split()
                 status_code = int(parts[-2])
@@ -53,14 +68,20 @@ def main():
                 if status_code in [200, 301, 400, 401, 403, 404, 405, 500]:
                     stats[status_code] = stats.get(status_code, 0) + 1
 
+                total_size += file_size
+
             except (IndexError, ValueError):
                 pass
+            line_count += 1
+
+            if (line_count != 0) and (line_count % 10 == 0):
+                print_stats(stats)
+
 
     except KeyboardInterrupt:
-        print("KeyboardInterrupt")
-        exit(0)
-    finally:
+        """Keyboard interrupt: print from beginning"""
         print_stats(stats)
+        raise
 
 
 if __name__ == "__main__":
