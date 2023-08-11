@@ -17,7 +17,7 @@ request(movieUrl, (error, response, body) => {
             const characterData = JSON.parse(body);
             resolve(characterData.name);
           } else {
-            reject('Error fetching character details');
+            reject(new Error('Error fetching character details'));
           }
         });
       });
