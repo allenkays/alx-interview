@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/python3
 
 """
 N Queens Problem Solver
@@ -6,11 +6,13 @@ N Queens Problem Solver
 
 import sys
 
+
 def print_solution(solution):
     """Print the solutions in the specified format"""
     for row, col in solution:
         print("[{}, {}]".format(row, col), end=' ')
     print()
+
 
 def is_safe(board, row, col, n):
     """Check if it's safe to place a queen at board[row][col]"""
@@ -31,10 +33,15 @@ def is_safe(board, row, col, n):
 
     return True
 
+
 def solve_nqueens(board, row, n, solutions):
     """Solve the N Queens problem using backtracking"""
     if row == n:
-        solution = [(r, c) for r in range(n) for c in range(n) if board[r][c] == 1]
+        solution = [
+                (r, c) for r in range(n)
+                for c in range(n)
+                if board[r][c] == 1
+            ]
         solutions.append(solution)
         return
 
@@ -61,6 +68,7 @@ def nqueens(n):
 
     for solution in solutions:
         print_solution(solution)
+
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
