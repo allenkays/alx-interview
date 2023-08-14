@@ -9,9 +9,12 @@ import sys
 
 def print_solution(solution):
     """Print the solutions in the specified format"""
-    for row, col in solution:
-        print("[{}, {}]".format(row, col), end=' ')
-    print()
+    print("[", end="")
+    for index, (row, col) in enumerate(solution):
+        print("[{}, {}]".format(row, col), end='')
+        if index < len(solution) - 1:
+            print(",", end=' ')
+    print("]")
 
 
 def is_safe(board, row, col, n):
