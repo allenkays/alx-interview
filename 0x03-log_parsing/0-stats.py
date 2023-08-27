@@ -1,88 +1,53 @@
 #!/usr/bin/python3
+
 """
-Script to read log input from standard in line by line
-and compute metrics
+Log Parsing and Metrics Computation
 """
-import signal
+
 import sys
+import signal
 
+# Signal handler to print statistics on Ctrl+C
+def handle_interrupt(signal, frame):
+    print_statistics()
 
-def print_stats(stats):
-    """
-    Outputs log statistics after every 10 lines or on keyboard
-    interrupt
+# Register Ctrl+C signal handler
+signal.signal(signal.SIGINT, handle_interrupt)
 
-    Args:
-        stats (dict): dictionary of key value pairs
+def print_statistics():
+    total_size = sum(file_sizes)
+    print("File size: {}".format(total_size))
+    
+    for status_code in sorted(status_codes.keys()):
+        print("{}: {}".format(status_code, status_codes[status_code]))
 
-    Return:
-        Output stats
-    """
-    total_size = sum(stats.values())
-    print(f"File size: {total_size}")
+# Initialize variables to store statistics
+file_sizes = []
+status_codes = {}
 
-    sorted_codes = sorted(stats.keys())
-    for code in sorted_codes:
-        print("{:s}: {:d}".format(code, stats[code]))
-
-
-def signal_handler(sig, frame):
-    """
-    Handle Keyboard Interrupt (SIGINT).
-
-    Args:
-        sig (int): The signal number.
-        frame (frame): The current stack frame
-
-    Returns:
-        None
-    """
-    print_stats(stats, total_size)
-    sys.exit(0)
-
-
-def main():
-    """
-    Function to parse log line by line and extract status code and file size
-    info
-
-    Args:
-        None
-
-    Returns:
-        None
-    """
-    stats = {}
-    total_size = 0
-    line_count = 0
-
-    signal.signal(signal.SIGINT, signal_handler)
-
-    try:
-        for line in sys.stdin:
+try:
+    # Process each line from stdin
+    for line_number, line in enumerate(sys.stdin, start=1):
+        parts = line.split()
+        if len(parts) >= 7:
             try:
-                parts = line.strip().split()
                 status_code = int(parts[-2])
                 file_size = int(parts[-1])
+                file_sizes.append(file_size)
+                
+                if status_code in status_codes:
+                    status_codes[status_code] += 1
+                else:
+                    status_codes[status_code] = 1
+                
+                # Print statistics after every 10 lines
+                if line_number % 10 == 0:
+                    print_statistics()
 
-                if status_code in [200, 301, 400, 401, 403, 404, 405, 500]:
-                    stats[status_code] = stats.get(status_code, 0) + 1
-
-                total_size += file_size
-
-            except (IndexError, ValueError):
+            except ValueError:
                 pass
-            line_count += 1
 
-            if (line_count != 0) and (line_count % 10 == 0):
-                print_stats(stats)
-
-
-    except KeyboardInterrupt:
-        """Keyboard interrupt: print from beginning"""
-        print_stats(stats)
-        raise
-
-
-if __name__ == "__main__":
-    main()
+except KeyboardInterrupt:
+    # Handle Ctrl+C interruption by printing statistics
+    print_statistics()
+    sys.exit(0)
