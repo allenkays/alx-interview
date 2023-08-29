@@ -20,12 +20,17 @@ def island_perimeter(grid):
     for row in range(rows):
         for col in range(cols):
             if grid[row][col] == 1:
+                # Add all four sides of a square
                 perimeter += 4
 
+                # Check if left neighbour is water or land
                 if col > 0 and grid[row][col - 1] == 1:
+                    # subract two for shared sides (one from each)
                     perimeter -= 2
 
+                # Check if top neighbor is water or  land
                 if row > 0 and grid[row - 1][col] == 1:
+                    # subtract 2 for shared sides (one from each)
                     perimeter -= 2
 
     return perimeter
