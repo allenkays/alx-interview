@@ -30,6 +30,15 @@ def is_prime(n):
 
 
 def calculate_primes(n):
+    """
+    Function to check if number selected is prime
+
+    Args:
+        n (int): number to checked
+
+    Returns:
+        Boolean: True or False
+    """
     primes = []
     for i in range(2, n + 1):
         if is_prime(i):
@@ -38,6 +47,16 @@ def calculate_primes(n):
 
 
 def isWinner(x, nums):
+    """
+    Function to check winner of primes game
+
+    Args:
+        x (int): Number of rounds
+        nums (list): List of numbers to be used a n
+
+    Returns:
+        Winner (str): Name of winner
+    """
     def play_round(n):
         if n <= 1:
             return "Maria"
