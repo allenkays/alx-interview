@@ -14,11 +14,11 @@ def is_prime(n):
     Returns:
         boolean : True or False
     """
-    if n <=1:
+    if n <= 1:
         return False
-    elif n <=3:
+    elif n <= 3:
         return True
-    elif n % 2  == 0 or n % 3 == 0:
+    elif n % 2 == 0 or n % 3 == 0:
         return False
 
     i = 5
@@ -59,7 +59,9 @@ def isWinner(x, nums):
         winner = None
         for prime in primes:
             if prime in remaining_numbers:
-                new_numbers = [num for num in remaining_numbers if num % prime != 0]
+                new_numbers = [
+                        num for num in remaining_numbers if num % prime != 0
+                ]
                 other_player = "Maria" if current_player == "Ben" else "Ben"
                 result = play_round(other_player, new_numbers, memo)
                 if result == current_player:
