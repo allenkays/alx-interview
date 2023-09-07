@@ -9,6 +9,8 @@
 
 ### Install Semi Standard
 
+[![js-semistandard-style](https://raw.githubusercontent.com/standard/semistandard/master/badge.svg)](https://github.com/standard/semistandard)
+
 >> $ sudo npm install semistandard --global
 
 ### Install Request
