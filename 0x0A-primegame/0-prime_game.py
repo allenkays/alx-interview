@@ -38,46 +38,25 @@ def calculate_primes(n):
 
 
 def isWinner(x, nums):
-    """
-    Function to determine the winner in a game of picking prime numbers and
-    their factors
+    def play_round(n):
+        if n <= 1:
+            return "Maria"
 
-    Args:
-        x (int): input interger representing the number of rounds to be played
-        nums (list): list of integers to selected from
+        primes = calculate_primes(n)
+        if len(primes) % 2 == 0:
+            return "Maria"
+        else:
+            return "Ben"
 
-    Returns:
-        name (string): name of winner after all rounds are played
-    """
-    def play_round(current_player, remaining_numbers, memo):
-        if not any(is_prime(num) for num in remaining_numbers):
-            return "Ben" if current_player == "Maria" else "Maria"
-
-        if (current_player, tuple(remaining_numbers)) in memo:
-            return memo[(current_player, tuple(remaining_numbers))]
-
-        winner = None
-        for prime in primes:
-            if prime in remaining_numbers:
-                new_numbers = [
-                        num for num in remaining_numbers if num % prime != 0
-                ]
-                other_player = "Maria" if current_player == "Ben" else "Ben"
-                result = play_round(other_player, new_numbers, memo)
-                if result == current_player:
-                    winner = current_player
-                    break
-
-        memo[(current_player, tuple(remaining_numbers))] = winner
-        return winner
-
-    most_wins = {"Maria": 0, "Ben": 0}
-    primes = calculate_primes(max(nums))
+    winner_count = {"Maria": 0, "Ben": 0}
 
     for n in nums:
-        winner = play_round("Maria", list(range(1, n + 1)), {})
-        most_wins[winner] += 1
+        winner = play_round(n)
+        winner_count[winner] += 1
 
-    if most_wins["Maria"] == most_wins["Ben"]:
-        return None
-    return "Maria" if most_wins["Maria"] > most_wins["Ben"] else "Ben"
+    if winner_count["Maria"] > winner_count["Ben"]:
+        return "Maria"
+    elif winner_count["Maria"] < winner_count["Ben"]:
+        return "Ben"
+    else:
+        return "Ben"
