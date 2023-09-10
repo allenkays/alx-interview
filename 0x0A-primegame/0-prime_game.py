@@ -1,71 +1,56 @@
 #!/usr/bin/python3
 """
-0. Prime Game
+Module: prime_game
+
+This module defines a function for playing the prime game.
 """
 
 
-def is_prime(n):
+def sieve_eratosthenes(limit):
     """
-    Function to check if number is prime or not
+    Calculate prime numbers using the Sieve of Eratosthenes algorithm.
 
     Args:
-        n (int): interger to check
+        limit (int): The upper bound for generating prime numbers.
 
     Returns:
-        boolean : True or False
+        list: A list of prime numbers less than or equal to the given limit.
     """
-    if n <= 1:
-        return False
-    elif n <= 3:
-        return True
-    elif n % 2 == 0 or n % 3 == 0:
-        return False
+    sieve = [True] * (limit + 1)
+    sieve[0:2] = [False, False]
 
-    i = 5
-    while i * i <= n:
-        if n % i == 0 or n % (i + 2) == 0:
-            return False
-        i += 6
-    return True
+    for current in range(2, int(limit**0.5) + 1):
+        if sieve[current]:
+            for multiple in range(current*current, limit + 1, current):
+                sieve[multiple] = False
 
-
-def calculate_primes(n):
-    """
-    Function to check if number selected is prime
-
-    Args:
-        n (int): number to checked
-
-    Returns:
-        Boolean: True or False
-    """
-    primes = []
-    for i in range(2, n + 1):
-        if is_prime(i):
-            primes.append(i)
+    primes = [num for num, is_prime in enumerate(sieve) if is_prime]
     return primes
 
 
 def isWinner(x, nums):
     """
-    Function to check winner of primes game
+    Determine the winner of the prime game for multiple rounds.
 
     Args:
-        x (int): Number of rounds
-        nums (list): List of numbers to be used a n
+        x (int): The number of rounds.
+        nums (list): A list of integers that are upper bounds for each round.
 
     Returns:
-        Winner (str): Name of winner
+        str: The name of the player (Maria or Ben) who won the most rounds.
+             If the winner cannot be determined, it returns "Ben" by default.
     """
+    primes = sieve_eratosthenes(10000)
+
     def play_round(n):
         if n <= 1:
-            return "Maria"
+            return "Ben"  # Maria can't make a move, so Ben wins.
 
-        primes = calculate_primes(n)
-        if len(primes) % 2 == 0:
-            return "Maria"
-        else:
+        count = sum(1 for prime in primes if prime <= n)
+        if count % 2 == 0:
             return "Ben"
+        else:
+            return "Maria"
 
     winner_count = {"Maria": 0, "Ben": 0}
 
@@ -78,4 +63,11 @@ def isWinner(x, nums):
     elif winner_count["Maria"] < winner_count["Ben"]:
         return "Ben"
     else:
-        return "Ben"
+        return "Ben"  # In case of a tie, we assume Ben wins.
+
+
+# Example usage:
+if __name__ == "__main__":
+    x = 3
+    nums = [4, 5, 1]
+    print("Winner: {}".format(isWinner(x, nums)))
