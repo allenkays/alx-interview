@@ -63,7 +63,7 @@ def isWinner(x, nums):
     elif winner_count["Maria"] < winner_count["Ben"]:
         return "Ben"
     else:
-        return None  # In case of a tie, we assume Ben wins.
+        return "None"  # In case of a tie, we assume Ben wins.
 
 
 # Example usage:
